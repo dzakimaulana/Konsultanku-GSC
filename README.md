@@ -17,13 +17,13 @@
 
 </div>
 
-## Architecture🧱
+## Architecture
 <p align="center">
   <a href="" rel="noopener">
  <img width=400px height=auto src="./assets/architecture.jpg" alt="Project logo"></a>
 </p>
 
-## API Documentation🗄️
+## API Documentation
 ### Auth
 This API field use for authentification which use firebase one of part google technology
 #### Register
@@ -32,16 +32,18 @@ This API field use for authentification which use firebase one of part google te
 - Header :
   - Content-Type: application/x-www-form-urlencoded
 - Request
-  - **id**: (string, required) The unique identifier for the item.
-  - **name**: (string, required) The name of the item.
-  - **price**: (number, required) The price of the item.
-  - **quantity**: (integer, required) The quantity of the item.
+  - **email**: (string, required)
+  - **password**: (string, required)
+  - **phone_number**: (string, required)
+  - **name**: (string, required)
+  - **file**: (file, required)
+  - **role**: (string, required) Only Student or MSME
 - Response
 ```json
 {
   "success": {
-		"code": "int",
-		"data": "string"
+    "code": "int",
+    "data": "string"
   }
 }
 ```
