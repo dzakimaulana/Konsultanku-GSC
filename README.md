@@ -1,6 +1,6 @@
 <p align="center">
   <a href="" rel="noopener">
- <img width=317.6px height=178.7px src="./assets/logo.jpg" alt="Project logo"></a>
+ <img width=300px height=auto src="./assets/logo.jpg" alt="Project logo"></a>
 </p>
 
 <h3 align="center">Konsultanku-GSC</h3>
@@ -20,7 +20,7 @@
 ## Architecture🧱
 <p align="center">
   <a href="" rel="noopener">
- <img width=317.6px height=178.7px src="./assets/architecture.jpg" alt="Project logo"></a>
+ <img width=400px height=auto src="./assets/architecture.jpg" alt="Project logo"></a>
 </p>
 
 ## API Documentation🗄️
@@ -37,12 +37,12 @@ This API field use for authentification which use firebase one of part google te
   - **price**: (number, required) The price of the item.
   - **quantity**: (integer, required) The quantity of the item.
 - Response
-```
+```json
 {
-		"success": {
-			"code": "int",
-			"data": "string,
-    }
+  "success": {
+		"code": "int",
+		"data": "string"
+  }
 }
 ```
 
