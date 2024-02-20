@@ -1,6 +1,6 @@
 <p align="center">
   <a href="" rel="noopener">
- <img width=300px height=auto src="./assets/logo.jpg" alt="Project logo"></a>
+ <img width=300px height=auto src="./assets/logo.png" alt="Project logo"></a>
 </p>
 
 <h3 align="center">Konsultanku-GSC</h3>
