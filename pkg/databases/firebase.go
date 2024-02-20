@@ -10,6 +10,7 @@ import (
 )
 
 var AuthMd *auth.Client
+var StorageFile *storage.Client
 
 type Auth struct {
 	auth *auth.Client
@@ -37,6 +38,7 @@ func FirebaseConn() (*Auth, *Storage, error) {
 	if err != nil {
 		panic(err.Error())
 	}
+	StorageFile = storage
 
 	return &Auth{auth: auth}, &Storage{storage: storage}, nil
 }

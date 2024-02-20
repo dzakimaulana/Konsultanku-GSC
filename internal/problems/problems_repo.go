@@ -17,18 +17,32 @@ func NewRepo(db *gorm.DB) ProblemRepo {
 	}
 }
 
-func (r *Repo) GetAll(ctx context.Context) (*[]models.Problem, error) {
+func (r *Repo) GetAll(ctx context.Context, id string) (*[]models.Problem, error) {
 	var problems []models.Problem
-	if err := r.DB.WithContext(ctx).Find(&problems).Error; err != nil {
+	if err := r.DB.WithContext(ctx).Where("id = ?", id).Find(&problems).Error; err != nil {
 		return nil, err
 	}
 	return &problems, nil
 }
 
-func (r *Repo) GetByID(ctx context.Context, id string) (*models.Problem, error) {
-	var problems models.Problem
-	if err := r.DB.WithContext(ctx).Preload("Comments").Preload("Msme").First(&problems, "id = ?", id).Error; err != nil {
+func (r *Repo) AddProblem(ctx context.Context, prob models.Problem) (*models.Problem, error) {
+	if err := r.DB.WithContext(ctx).Create(&prob).Error; err != nil {
 		return nil, err
 	}
-	return &problems, nil
+	return &prob, nil
+}
+
+func (r *Repo) AddProblemsTags(ctx context.Context, pt []models.ProblemsTags) (*[]models.ProblemsTags, error) {
+	if err := r.DB.WithContext(ctx).Create(&pt).Error; err != nil {
+		return nil, err
+	}
+	return &pt, nil
+}
+
+func (r *Repo) GetMsmeById(ctx context.Context, id string) (*models.MSME, error) {
+	var msme models.MSME
+	if err := r.DB.WithContext(ctx).Preload("Tags").Preload("Comments").First(&msme, "id = ?", id).Error; err != nil {
+		return nil, err
+	}
+	return &msme, nil
 }

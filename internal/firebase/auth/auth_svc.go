@@ -63,6 +63,9 @@ func (s *Svc) Register(ctx context.Context, regis RegisterFirebaseReq) (*models.
 	// Send email verification
 	token := resp["idToken"].(string)
 	evResp, err := s.AuthRepo.EmailVerification(ctx, token)
+	if err != nil {
+		return nil, err
+	}
 
 	finalResponse := &models.EmailRes{
 		Email: evResp["email"].(string),

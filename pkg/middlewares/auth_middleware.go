@@ -40,6 +40,7 @@ func GetSession(sess *session.Store) fiber.Handler {
 		userinfo, err := databases.AuthMd.GetUser(c.Context(), uid.(string))
 		role := userinfo.CustomClaims["role"].(string)
 		c.Locals("role", role)
+		c.Locals("id", uid)
 		return c.Next()
 	}
 }

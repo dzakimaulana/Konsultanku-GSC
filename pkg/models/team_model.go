@@ -11,3 +11,9 @@ type Team struct {
 	Comment  *[]Comment `gorm:"foreignKey:TeamID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL" json:"-"`
 	Students *[]Student `gorm:"foreignKey:TeamID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL" json:"-"`
 }
+
+type TeamResp struct {
+	ID     string  `json:"id"`
+	Name   string  `json:"name"`
+	Rating float64 `json:"rating"`
+}

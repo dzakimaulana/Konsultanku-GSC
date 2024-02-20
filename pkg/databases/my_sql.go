@@ -14,7 +14,7 @@ type Database struct {
 	DB *gorm.DB
 }
 
-func DatabaseConn() {
+func DatabaseConn() (*Database, error) {
 	err := godotenv.Load(".env")
 	if err != nil {
 		panic(".env not detected")
@@ -27,14 +27,23 @@ func DatabaseConn() {
 		os.Getenv("DB_DATABASE"))
 	database, err := gorm.Open(mysql.Open(dsn))
 	if err != nil {
-		panic(err.Error())
+		return nil, err
 	}
 
 	if err := database.AutoMigrate(
+		&models.Tags{},
+		&models.MSME{},
+		&models.Student{},
 		&models.Problem{},
+		&models.Comment{},
+		&models.Team{},
+		&models.Collaboration{},
+		&models.ProblemsTags{},
+		&models.UsersTags{},
 	); err != nil {
-		panic(err.Error())
+		return nil, err
 	}
+	return &Database{DB: database}, nil
 }
 
 func (d *Database) GetDB() *gorm.DB {

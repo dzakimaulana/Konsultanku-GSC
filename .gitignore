@@ -6,3 +6,4 @@
 *.dylib
 
 .vscode
+firebase-sdk.json

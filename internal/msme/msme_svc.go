@@ -3,6 +3,7 @@ package msme
 import (
 	"context"
 	"konsultanku-v2/internal/firebase/auth"
+	"konsultanku-v2/pkg/databases"
 	"konsultanku-v2/pkg/models"
 	"sync"
 	"time"
@@ -22,7 +23,26 @@ func NewSvc(mr MsmeRepo, ar auth.AuthRepo) MsmeSvc {
 	}
 }
 
-func (s *Svc) GetByID(ctx context.Context, id string) (*models.MSMEResp, error) {
+func (s *Svc) AddProfile(ctx context.Context, req AddReq, id string) error {
+	ctx, cancel := context.WithTimeout(ctx, s.timeout)
+	defer cancel()
+
+	msme := &models.MSME{
+		ID:      id,
+		Name:    req.Name,
+		Since:   req.Since,
+		Type:    req.Type,
+		Created: time.Now().Unix(),
+	}
+
+	_, err := s.MsmeRepo.AddProfile(ctx, *msme)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *Svc) GetOwnProfile(ctx context.Context, id string) (*models.MSMEOwnResp, error) {
 	ctx, cancel := context.WithTimeout(ctx, s.timeout)
 	defer cancel()
 
@@ -60,64 +80,115 @@ func (s *Svc) GetByID(ctx context.Context, id string) (*models.MSMEResp, error) 
 		PhotoURL:    user.PhotoURL,
 	}
 
-	resp := &models.MSMEResp{
-		User:    *userResp,
-		Name:    msme.Name,
-		Since:   msme.Since,
-		Tags:    *msme.Tags,
-		Problem: *msme.Problem,
+	var collab []models.CollabMsmeResp
+	for _, coll := range *msme.Collaboration {
+		student, err := databases.AuthMd.GetUser(ctx, coll.StudentID)
+		if err != nil {
+			break
+		}
+		std := &models.UserResponse{
+			UID:         student.UID,
+			Email:       student.Email,
+			DisplayName: student.DisplayName,
+			PhoneNumber: student.PhoneNumber,
+			PhotoURL:    student.PhotoURL,
+		}
+		collab = append(collab, models.CollabMsmeResp{
+			Student:         *std,
+			InCollaboration: coll.InCollaboration,
+		})
+	}
+
+	resp := &models.MSMEOwnResp{
+		User:          *userResp,
+		Name:          msme.Name,
+		Since:         msme.Since,
+		Tags:          *msme.Tags,
+		Problem:       *msme.Problem,
+		Collaboration: collab,
 	}
 
 	return resp, nil
 }
 
-func (s *Svc) AddProfile(ctx context.Context, req AddReq, id string) (*models.MSMEResp, error) {
+func (s *Svc) AddedCollab(ctx context.Context, studentId string, msmeId string) error {
 	ctx, cancel := context.WithTimeout(ctx, s.timeout)
 	defer cancel()
 
-	var wg sync.WaitGroup
-
-	var user *models.Person
-	var msmeResp *models.MSME
-	msme := &models.MSME{
-		ID:      id,
-		Name:    req.Name,
-		Since:   req.Since,
-		Created: time.Now().Unix(),
+	collab := &models.Collaboration{
+		MsmeID:          msmeId,
+		StudentID:       studentId,
+		InCollaboration: false,
+		Finished:        false,
 	}
-	var userErr, msmeErr error
+	_, err := s.MsmeRepo.AddedCollab(ctx, *collab)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *Svc) GiveProgress(ctx context.Context, req UpdateProgress, msmeId string, studentId string) error {
+	ctx, cancel := context.WithTimeout(ctx, s.timeout)
+	defer cancel()
+
+	collab := &models.Collaboration{
+		MsmeID:      msmeId,
+		StudentID:   studentId,
+		Progress:    int8(req.Progress % 100),
+		Description: req.Description,
+	}
+	_, err := s.MsmeRepo.GiveProgress(ctx, *collab)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *Svc) EndCollaboration(ctx context.Context, req EndCollaboration, msmeId string, studentId string) error {
+	ctx, cancel := context.WithTimeout(ctx, s.timeout)
+	defer cancel()
+
+	collab := &models.Collaboration{
+		MsmeID:      msmeId,
+		StudentID:   studentId,
+		Progress:    int8(100),
+		Description: req.Description,
+		Feedback:    req.Feedback,
+		Rating:      float32(req.Rating % 5),
+		Finished:    true,
+	}
+
+	var wg sync.WaitGroup
+	var errStudent, errProgress error
 
 	wg.Add(2)
+
 	go func() {
 		defer wg.Done()
-		user, userErr = s.AuthRepo.GetUserInfo(ctx, id)
+		student, err := s.MsmeRepo.GetStudent(ctx, studentId)
+		if err == nil {
+			student = &models.Student{
+				ID:     studentId,
+				Rating: student.Rating + float32(req.Rating%5),
+			}
+			_, errStudent = s.MsmeRepo.StudentRating(ctx, *student)
+		}
+		errStudent = err
 	}()
 
 	go func() {
 		defer wg.Done()
-		msmeResp, msmeErr = s.MsmeRepo.AddProfile(ctx, *msme)
+		_, errProgress = s.MsmeRepo.GiveProgress(ctx, *collab)
 	}()
+
 	wg.Wait()
 
-	if userErr != nil {
-		return nil, userErr
+	if errStudent != nil {
+		return errStudent
 	}
-	if msmeErr != nil {
-		return nil, msmeErr
+	if errProgress != nil {
+		return errProgress
 	}
-
-	userResp := &models.UserResponse{
-		UID:         user.UID,
-		Email:       user.Email,
-		DisplayName: user.DisplayName,
-		PhoneNumber: user.PhoneNumber,
-		PhotoURL:    user.PhotoURL,
-	}
-
-	resp := &models.MSMEResp{
-		User:  *userResp,
-		Name:  msmeResp.Name,
-		Since: msmeResp.Name,
-	}
-	return resp, nil
+	return nil
 }

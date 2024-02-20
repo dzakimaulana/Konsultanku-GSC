@@ -1,8 +1,12 @@
 package main
 
 import (
+	"konsultanku-v2/internal/comments"
 	"konsultanku-v2/internal/firebase/auth"
 	"konsultanku-v2/internal/firebase/storage"
+	"konsultanku-v2/internal/msme"
+	"konsultanku-v2/internal/problems"
+	"konsultanku-v2/internal/student"
 	"konsultanku-v2/pkg/databases"
 	"konsultanku-v2/pkg/routes"
 
@@ -13,6 +17,11 @@ import (
 
 func main() {
 	ah, se, err := databases.FirebaseConn()
+	if err != nil {
+		panic(err.Error())
+	}
+
+	db, err := databases.DatabaseConn()
 	if err != nil {
 		panic(err.Error())
 	}
@@ -33,6 +42,22 @@ func main() {
 	authSvc := auth.NewSvc(authRepo, storageRepo)
 	authHandler := auth.NewHandler(authSvc, store)
 	routes.AuthRoute(authHandler, app)
+
+	problemRepo := problems.NewRepo(db.GetDB())
+	problemSvc := problems.NewSvc(problemRepo)
+
+	commentRepo := comments.NewRepo(db.GetDB())
+	commentSvc := comments.NewSvc(commentRepo)
+
+	msmeRepo := msme.NewRepo(db.GetDB())
+	msmeSvc := msme.NewSvc(msmeRepo, authRepo)
+	msmeHandler := msme.NewHandler(msmeSvc, problemSvc, commentSvc, store)
+	routes.MsmeRoute(msmeHandler, app)
+
+	studentRepo := student.NewRepo(db.GetDB())
+	studentSvc := student.NewSvc(studentRepo, authRepo)
+	studentHandler := student.NewHandler(studentSvc, problemSvc, commentSvc, store)
+	routes.StudentRoute(studentHandler, app)
 
 	err = app.Listen(":8080")
 	if err != nil {

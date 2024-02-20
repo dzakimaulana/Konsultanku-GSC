@@ -20,6 +20,10 @@ type UserResponse struct {
 	PhotoURL    string `json:"photo_url"`
 }
 
+type UserPhoneResp struct {
+	PhoneNumber string `json:"phone_number"`
+}
+
 type AuthResponse struct {
 	IDToken      string        `json:"id_token"`
 	RefreshToken string        `json:"refresh_token"`

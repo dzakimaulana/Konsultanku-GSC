@@ -2,6 +2,7 @@ package auth
 
 import (
 	"fmt"
+	"konsultanku-v2/pkg/models"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
@@ -83,22 +84,10 @@ func (h *Handler) Login(c *fiber.Ctx) error {
 	}
 
 	// set session
-	sess, err := h.Session.Get(c)
-	if err != nil {
+	if err := h.SetSession(c, *resp); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": fiber.Map{
 				"code":    fiber.StatusBadRequest,
-				"message": err.Error(),
-			},
-		})
-	}
-	sess.Set("access_token", resp.IDToken)
-	sess.Set("refresh_token", resp.RefreshToken)
-	sess.Set("uid", resp.LocalID)
-	if err := sess.Save(); err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": fiber.Map{
-				"code":    fiber.StatusInternalServerError,
 				"message": err.Error(),
 			},
 		})
@@ -110,6 +99,21 @@ func (h *Handler) Login(c *fiber.Ctx) error {
 			"data": resp,
 		},
 	})
+}
+
+func (h *Handler) SetSession(c *fiber.Ctx, resp models.AuthResponse) error {
+	// set session
+	sess, err := h.Session.Get(c)
+	if err != nil {
+		return err
+	}
+	sess.Set("access_token", resp.IDToken)
+	sess.Set("refresh_token", resp.RefreshToken)
+	sess.Set("uid", resp.LocalID)
+	if err := sess.Save(); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (h *Handler) ResetPassword(c *fiber.Ctx) error {
