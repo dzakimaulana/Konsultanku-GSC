@@ -21,11 +21,11 @@ func NewSvc(cr CommentRepo) *Svc {
 	}
 }
 
-func (s *Svc) AddComment(ctx context.Context, commentReq AddComment, studentId string, teamId string) error {
+func (s *Svc) AddComment(ctx context.Context, commentReq AddComment, studentId string, teamId string, problemId string) error {
 	ctx, cancel := context.WithTimeout(ctx, s.timeout)
 	defer cancel()
 
-	problemId, err := uuid.Parse(commentReq.ProblemID)
+	probId, err := uuid.Parse(problemId)
 	if err != nil {
 		return err
 	}
@@ -34,7 +34,7 @@ func (s *Svc) AddComment(ctx context.Context, commentReq AddComment, studentId s
 		comment = &models.Comment{
 			ID:        uuid.New(),
 			StudentID: studentId,
-			ProblemID: problemId,
+			ProblemID: probId,
 			Content:   commentReq.Content,
 		}
 	} else {
@@ -45,7 +45,7 @@ func (s *Svc) AddComment(ctx context.Context, commentReq AddComment, studentId s
 		comment = &models.Comment{
 			ID:        uuid.New(),
 			StudentID: studentId,
-			ProblemID: problemId,
+			ProblemID: probId,
 			TeamID:    ti,
 			Content:   commentReq.Content,
 		}

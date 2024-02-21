@@ -24,12 +24,14 @@
 </p>
 
 ## API Documentation
+- [Auth](#auth)
+- [Student](#student)
 ### Auth
-1. [Register](#register)
-2. [Login](#login)
-3. [Reset-Password](#reset-password)
-4. [Logout](#logout)
 This API field use for authentification which use firebase one of part google technology
+- [Register](#register)
+- [Login](#login)
+- [Reset Password](#reset-password)
+- [Logout](#logout)
 #### Register
 - Method : POST
 - Endpoint : ```/api/auth/register```
@@ -107,6 +109,237 @@ None
   "success": {
     "code": 200,
     "data": "string"
+  }
+}
+```
+### Student
+This API field use for student role
+- [Add Profile](#add-profile)
+- [Accept Offer](#accept-offer)
+- [Add Comment](#add-comment)
+- [Create Team](#create-team)
+- [Join Team](#join-team)
+- [Get Own Profile](#get-own-profile)
+- [Get Problems](#get-problems)
+- [Get Collaborations](#get-collaborations)
+#### Add Profile
+- Method : POST
+- Endpoint : ```/api/student/profile```
+- Header :
+  - Content-Type: application/json
+- Request
+```json
+{
+  "major": "string",
+  "university": "string",
+  "class_of": "string"
+}
+```
+- Response
+```json
+{
+  "success": {
+    "code": 200,
+    "data": "string"
+  }
+}
+```
+#### Accept Offer
+- Method : POST
+- Endpoint : ```/api/student/collaboration/:msmeId```
+- Header :
+  - Content-Type: application/json
+- Response
+```json
+{
+  "success": {
+    "code": 200,
+    "data": "string"
+  }
+}
+```
+#### Add Comment
+- Method : POST
+- Endpoint : ```/api/student/comment/:problemId```
+- Header :
+  - Content-Type: application/json
+- Request
+```json
+{
+  "content": "string"
+}
+```
+- Response
+```json
+{
+  "success": {
+    "code": 200,
+    "data": "string"
+  }
+}
+```
+#### Accept Offer
+- Method : POST
+- Endpoint : ```/api/student/collaboration/:msmeId```
+- Header :
+  - Content-Type: application/json
+- Response
+```json
+{
+  "success": {
+    "code": 200,
+    "data": "string"
+  }
+}
+```
+#### Create Team
+- Method : POST
+- Endpoint : ```/api/student/team/create```
+- Header :
+  - Content-Type: application/json
+- Request
+```json
+{
+  "name": "string"
+}
+```
+- Response
+```json
+{
+  "success": {
+    "code": 200,
+    "data": "string"
+  }
+}
+```
+#### Join Team
+- Method : POST
+- Endpoint : ```/api/student/team/join/:teamId```
+- Header :
+  - Content-Type: application/json
+- Response
+```json
+{
+  "success": {
+    "code": 200,
+    "data": "string"
+  }
+}
+```
+#### Get Own Profile
+- Method : GET
+- Endpoint : ```/api/student/profile```
+- Header :
+  - Content-Type: application/json
+- Response
+```json
+{
+  "success": {
+    "code": 200,
+    "data": {
+      "user" : {
+        "uid": "string",
+        "email": "string",
+        "display_name": "string",
+        "phone_number": "string",
+        "photo_url": "string"
+      }
+    },
+    "major": "string",
+    "university": "string",
+    "class_of": "string",
+    "tags" : [
+      {
+        "id": "string",
+        "name": "string"
+      }
+    ],
+    "team": {
+      "id": "string",
+      "name": "string"
+    },
+    "collaboration" : [
+      {
+        "msme" : {
+        "uid": "string",
+        "email": "string",
+        "display_name": "string",
+        "phone_number": "string",
+        "photo_url": "string"
+        },
+        "in_collaboration": "bool"
+      }
+    ]
+  }
+}
+```
+#### Get Problems
+- Method : POST
+- Endpoint : ```/api/student/problems```
+- Header :
+  - Content-Type: application/json
+- Response
+```json
+{
+  "success": {
+    "code": 200,
+    "data": [
+      {
+        "id": "string",
+        "like": "int",
+        "comment_count": "int",
+        "created": "int",
+        "title": "string",
+        "content": "string",
+        "msme": {
+          "user" : {
+          "uid": "string",
+          "email": "string",
+          "display_name": "string",
+          "phone_number": "string",
+          "photo_url": "string"
+          },
+          "name": "string",
+          "since": "string"
+        },
+        "tags": [
+          {
+          "id": "string",
+          "name": "string"
+          }
+        ],
+      }
+    ]
+  }
+}
+```
+#### Get Collaboration
+- Method : GET
+- Endpoint : ```/api/student/collaborations```
+- Header :
+  - Content-Type: application/json
+- Response
+```json
+{
+  "success": {
+    "code": 200,
+    "data": [
+      {
+        "msme": {
+          "uid": "string",
+          "email": "string",
+          "display_name": "string",
+          "phone_number": "string",
+          "photo_url": "string"
+        },
+        "in_collaboration": "bool",
+        "progress": "int",
+        "description": "string",
+        "finished": "bool",
+        "feedback": "string",
+        "rating": "float"
+      }
+    ]
   }
 }
 ```

@@ -38,7 +38,8 @@ func (h *Handler) AddComment(c *fiber.Ctx) error {
 		})
 	}
 	teamId := c.Locals("team_id")
-	if err := h.CommentSvc.AddComment(c.Context(), comm, studentId.(string), teamId.(string)); err != nil {
+	problemId := c.Params("problemId")
+	if err := h.CommentSvc.AddComment(c.Context(), comm, studentId.(string), teamId.(string), problemId); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": fiber.Map{
 				"code":    fiber.StatusInternalServerError,

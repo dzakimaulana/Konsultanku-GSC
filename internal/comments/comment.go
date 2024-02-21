@@ -6,8 +6,7 @@ import (
 )
 
 type AddComment struct {
-	ProblemID string `json:"problem_id"`
-	Content   string `json:"content"`
+	Content string `json:"content"`
 }
 
 type CommentRepo interface {
@@ -16,6 +15,6 @@ type CommentRepo interface {
 }
 
 type CommentSvc interface {
-	AddComment(ctx context.Context, commentReq AddComment, studentId string, teamId string) error
+	AddComment(ctx context.Context, commentReq AddComment, studentId string, teamId string, problemId string) error
 	GetComments(ctx context.Context, mseId string) (*[]models.CommentResp, error)
 }
