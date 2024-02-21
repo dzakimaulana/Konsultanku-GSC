@@ -26,6 +26,7 @@
 ## API Documentation
 - [Auth](#auth)
 - [Student](#student)
+- [MSME](#msme)
 ### Auth
 This API field use for authentification which use firebase one of part google technology
 - [Register](#register)
@@ -119,7 +120,7 @@ This API field use for student role
 - [Add Comment](#add-comment)
 - [Create Team](#create-team)
 - [Join Team](#join-team)
-- [Get Own Profile](#get-student-profile)
+- [Get Student Profile](#get-student-profile)
 - [Get Problems](#get-problems)
 - [Get Collaborations](#get-collaborations)
 #### Add Profile
@@ -350,9 +351,8 @@ This API field use for MSME role
 - [Add Collaboration](#add-collaboration)
 - [Give Progress](#give-progress)
 - [End Collaboration](#end-collaboration)
-- [Get Own Profile](#get-msme-profile)
-- [Get Problems](#get-problems)
-- [Get Collaborations](#get-collaborations)
+- [Get Msme Profile](#get-msme-profile)
+- [Get Comments](#get-comments)
 #### Add Profile
 - Method : POST
 - Endpoint : ```/api/msme/profile```
