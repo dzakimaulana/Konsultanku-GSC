@@ -119,7 +119,7 @@ This API field use for student role
 - [Add Comment](#add-comment)
 - [Create Team](#create-team)
 - [Join Team](#join-team)
-- [Get Own Profile](#get-own-profile)
+- [Get Own Profile](#get-student-profile)
 - [Get Problems](#get-problems)
 - [Get Collaborations](#get-collaborations)
 #### Add Profile
@@ -226,7 +226,7 @@ This API field use for student role
   }
 }
 ```
-#### Get Own Profile
+#### Get Student Profile
 - Method : GET
 - Endpoint : ```/api/student/profile```
 - Header :
@@ -313,7 +313,7 @@ This API field use for student role
   }
 }
 ```
-#### Get Collaboration
+#### Get Collaborations
 - Method : GET
 - Endpoint : ```/api/student/collaborations```
 - Header :
@@ -343,3 +343,195 @@ This API field use for student role
   }
 }
 ```
+### Msme
+This API field use for MSME role
+- [Add Profile](#add-profile)
+- [Add Problem](#add-problem)
+- [Add Collaboration](#add-collaboration)
+- [Give Progress](#give-progress)
+- [End Collaboration](#end-collaboration)
+- [Get Own Profile](#get-msme-profile)
+- [Get Problems](#get-problems)
+- [Get Collaborations](#get-collaborations)
+#### Add Profile
+- Method : POST
+- Endpoint : ```/api/msme/profile```
+- Header :
+  - Content-Type: application/json
+- Request
+```json
+{
+  "name": "string",
+  "since": "string",
+  "type": "string"
+}
+```
+- Response
+```json
+{
+  "success": {
+    "code": 200,
+    "data": "string"
+  }
+}
+```
+#### Accept Problem
+- Method : POST
+- Endpoint : ```/api/msme/problem```
+- Header :
+  - Content-Type: application/json
+- Request
+```json
+{
+  "title": "string",
+  "tag": [0,1,2,3],
+  "type": "string"
+}
+```
+- Response
+```json
+{
+  "success": {
+    "code": 200,
+    "data": "string"
+  }
+}
+``` 
+#### Add Collaboration
+- Method : POST
+- Endpoint : ```/api/msme/collaboration/:studentId```
+- Header :
+  - Content-Type: application/json
+- Response
+```json
+{
+  "success": {
+    "code": 200,
+    "data": "string"
+  }
+}
+``` 
+#### Give Progress
+- Method : PUT
+- Endpoint : ```/api/msme/progress/:studentId```
+- Header :
+  - Content-Type: application/json
+- Request
+```json
+{
+  "progress": "int",
+  "description": "string"
+}
+```
+- Response
+```json
+{
+  "success": {
+    "code": 200,
+    "data": "string"
+  }
+}
+``` 
+#### End Collaboration
+- Method : PUT
+- Endpoint : ```/api/msme/end-collaboration/:studentId```
+- Header :
+  - Content-Type: application/json
+- Response
+```json
+{
+  "success": {
+    "code": 200,
+    "data": "string"
+  }
+}
+``` 
+#### Get Msme Profile
+- Method : GET
+- Endpoint : ```/api/msme/profile```
+- Header :
+  - Content-Type: application/json
+- Response
+```json
+{
+  "success": {
+    "code": 200,
+    "data": {
+      "user": {
+          "uid": "string",
+          "email": "string",
+          "display_name": "string",
+          "phone_number": "string",
+          "photo_url": "string"
+        },
+      "name": "string",
+      "since": "string",
+      "type": "string",
+      "problem": [
+        {
+        "id": "string",
+        "like": "int",
+        "comment_count": "int",
+        "created": "int",
+        "title": "string",
+        "content": "string",
+        "tag": [
+            {
+            "id": "int",
+            "name": "string"
+            }
+          ]
+        }
+      ],
+      "collaboration": [
+        {
+        "student": {
+          "uid": "string",
+          "email": "string",
+          "display_name": "string",
+          "phone_number": "string",
+          "photo_url": "string"
+        },
+        "in_collaboration": "bool"
+        }
+      ]
+    }
+  }
+}
+``` 
+#### Get Comments
+- Method : GET
+- Endpoint : ```/api/msme/comments```
+- Header :
+  - Content-Type: application/json
+- Response
+```json
+{
+  "success": {
+    "code": 200,
+    "data": [
+      {
+        "id": "string",
+        "content": "string",
+        "team": {
+          "id": "string",
+          "name": "string",
+          "rating": "float"
+        },
+        "student": {
+          "user" : {
+            "uid": "string",
+            "email": "string",
+            "display_name": "string",
+            "phone_number": "string",
+            "photo_url": "string"
+          },
+          "major": "string",
+          "university": "string",
+          "class_of": "string"
+        }
+      }
+    ]
+  }
+}
+``` 

@@ -29,6 +29,7 @@ type MsmeRepo interface {
 	GiveProgress(ctx context.Context, collab models.Collaboration) (*models.Collaboration, error)
 	StudentRating(ctx context.Context, student models.Student) (*models.Student, error)
 	GetStudent(ctx context.Context, id string) (*models.Student, error)
+	FindProblemTags(ctx context.Context, id string) (*[]models.ProblemsTags, error)
 }
 
 type MsmeSvc interface {

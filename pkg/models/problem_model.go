@@ -25,3 +25,13 @@ type ProblemAllResp struct {
 	Msme         MSMEProbResp   `json:"msme"`
 	Tags         []ProblemsTags `json:"tags"`
 }
+
+type ProblemMsmeResp struct {
+	ID           uuid.UUID      `gorm:"primaryKey" json:"id"`
+	Like         int64          `json:"like"`
+	CommentCount int64          `json:"comment_count"`
+	Created      int64          `json:"created"`
+	Title        string         `json:"title"`
+	Content      string         `json:"content"`
+	Tags         []ProblemsTags `json:"tags"`
+}

@@ -80,32 +80,59 @@ func (s *Svc) GetOwnProfile(ctx context.Context, id string) (*models.MSMEOwnResp
 		PhotoURL:    user.PhotoURL,
 	}
 
-	var collab []models.CollabMsmeResp
-	for _, coll := range *msme.Collaboration {
-		student, err := databases.AuthMd.GetUser(ctx, coll.StudentID)
-		if err != nil {
-			break
+	wg.Add(2)
+	var collabs []models.CollabMsmeResp
+	var problems []models.ProblemMsmeResp
+	go func() {
+		defer wg.Done()
+		for _, coll := range *msme.Collaboration {
+			student, err := databases.AuthMd.GetUser(ctx, coll.StudentID)
+			if err != nil {
+				break
+			}
+			std := &models.UserResponse{
+				UID:         student.UID,
+				Email:       student.Email,
+				DisplayName: student.DisplayName,
+				PhoneNumber: student.PhoneNumber,
+				PhotoURL:    student.PhotoURL,
+			}
+			collabs = append(collabs, models.CollabMsmeResp{
+				Student:         *std,
+				InCollaboration: coll.InCollaboration,
+			})
 		}
-		std := &models.UserResponse{
-			UID:         student.UID,
-			Email:       student.Email,
-			DisplayName: student.DisplayName,
-			PhoneNumber: student.PhoneNumber,
-			PhotoURL:    student.PhotoURL,
+	}()
+
+	go func() {
+		defer wg.Done()
+		for _, prob := range *msme.Problem {
+			tags, err := s.MsmeRepo.FindProblemTags(ctx, prob.ID.String())
+			if err != nil {
+				break
+			}
+			problems = append(problems, models.ProblemMsmeResp{
+				ID:           prob.ID,
+				Like:         prob.Like,
+				CommentCount: int64(len(*prob.Comments)),
+				Created:      prob.Created,
+				Title:        prob.Title,
+				Content:      prob.Content,
+				Tags:         *tags,
+			})
 		}
-		collab = append(collab, models.CollabMsmeResp{
-			Student:         *std,
-			InCollaboration: coll.InCollaboration,
-		})
-	}
+	}()
+
+	wg.Wait()
 
 	resp := &models.MSMEOwnResp{
 		User:          *userResp,
 		Name:          msme.Name,
 		Since:         msme.Since,
+		Type:          msme.Type,
 		Tags:          *msme.Tags,
-		Problem:       *msme.Problem,
-		Collaboration: collab,
+		Problem:       problems,
+		Collaboration: collabs,
 	}
 
 	return resp, nil

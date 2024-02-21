@@ -67,3 +67,11 @@ func (r *Repo) GetStudent(ctx context.Context, id string) (*models.Student, erro
 	}
 	return &student, nil
 }
+
+func (r *Repo) FindProblemTags(ctx context.Context, id string) (*[]models.ProblemsTags, error) {
+	var pt []models.ProblemsTags
+	if err := r.DB.WithContext(ctx).Find(&pt, "id = ?", id).Error; err != nil {
+		return nil, err
+	}
+	return &pt, nil
+}
