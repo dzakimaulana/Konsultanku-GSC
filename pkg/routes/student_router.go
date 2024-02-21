@@ -13,6 +13,8 @@ func StudentRoute(h *student.Handler, f *fiber.App) {
 	student.Post("/profile", h.AddProfile)
 	student.Post("/collaboration/:mseId", h.AcceptOffer)
 	student.Post("/comment", h.AddComment)
+	student.Post("/team/create", h.CreateTeam)
+	student.Post("/team/join/:teamId", h.JoinTeam)
 	student.Get("/profile", h.GetOwnProfile)
 	student.Get("/problems", h.GetProblems)
 	student.Get("/collaborations", h.GetCollaboration)

@@ -42,9 +42,67 @@ This API field use for authentification which use firebase one of part google te
 ```json
 {
   "success": {
-    "code": "int",
+    "code": 200,
     "data": "string"
   }
 }
 ```
-
+#### Login
+- Method : POST
+- Endpoint : ```/api/auth/login```
+- Header :
+  - Content-Type: application/json
+- Request
+```json
+{
+  "email": "string",
+  "password": "string"
+}
+```
+- Response
+```json
+{
+  "success": {
+    "code": 200,
+    "data": "string"
+  }
+}
+```
+#### Reset Password
+- Method : POST
+- Endpoint : ```/api/auth/reset-password```
+- Header :
+  - Content-Type: application/json
+- Request
+```json
+{
+  "email": "string"
+}
+```
+- Response
+```json
+{
+  "success": {
+    "code": 200,
+    "data": "string"
+  }
+}
+```
+#### Logout
+- Method : POST
+- Endpoint : ```/api/auth/logout```
+- Header :
+  - Content-Type: application/json
+- Request
+```
+None
+```
+- Response
+```json
+{
+  "success": {
+    "code": 200,
+    "data": "string"
+  }
+}
+```
