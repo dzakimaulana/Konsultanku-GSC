@@ -25,6 +25,10 @@
 
 ## API Documentation
 ### Auth
+1. [Register](#register)
+2. [Login](#login)
+3. [Reset-Password](#reset-password)
+4. [Logout](#logout)
 This API field use for authentification which use firebase one of part google technology
 #### Register
 - Method : POST
